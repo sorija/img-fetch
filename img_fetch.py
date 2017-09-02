@@ -19,6 +19,8 @@ def main():
     print("Please preface the address with 'http://'")
     sys.exit(1)
   print("Working on it...")
+  if not os.path.exists(path):
+    os.makedirs(path)
   scraped_srcs = scrape_img(url)
   normalized_urls = normalize_src(url, scraped_srcs)
   save_links(normalized_urls, os.path.join(path, "img-links.txt"))
