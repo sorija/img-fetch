@@ -1,7 +1,9 @@
+import img_fetch
+import os
 import requests
 import unittest
 from unittest import mock
-import img_fetch
+from pathlib import Path
 
 def mocked_requests(*args, **kwargs):
   class MockResponse:
@@ -28,5 +30,16 @@ class MyTestCase(unittest.TestCase):
     actual = img_fetch.scrape_img("test-data/mock-page.html")
     self.assertEqual(expected, actual)
 
-if __name__ == '__main__':
+  def test_save_links(self):
+    text = ["Lorem Ipsum", "cupcake ipsum", "kitty ipsum"]
+    file_path = "test-data/my_file.txt"
+    expected_file = Path(file_path)
+    img_fetch.save_links(text, file_path)
+    self.assertTrue(expected_file.exists())
+    if expected_file.exists():
+      with open(file_path, "r") as f:
+        self.assertEqual(f.read(), '\n'.join(text))
+      os.remove(file_path)
+
+if __name__ == "__main__":
   unittest.main()

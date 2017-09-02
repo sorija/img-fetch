@@ -27,3 +27,8 @@ def scrape_img(url):
   for tag in img_tags:
     img_srcs.append(tag['src'])
   return img_srcs
+
+def save_links(img_srcs, file_path):
+  """"Writes images' adresses in path."""
+  with open(file_path, "w") as new_file:
+    new_file.write('\n'.join(img_srcs))
