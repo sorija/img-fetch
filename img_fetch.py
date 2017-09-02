@@ -58,10 +58,14 @@ def save_img(srcs, dir_path):
   count = 0
   for src in srcs:
     r = requests.get(src)
-    img = Image.open(BytesIO(r.content))
-    name = "img" + str(count) + pathlib.Path(src).suffix
-    img.save(os.path.join(dir_path, name))
-    img.close()
+    try:
+      img = Image.open(BytesIO(r.content))
+      name = "img" + str(count) + pathlib.Path(src).suffix
+      img.save(os.path.join(dir_path, name))
+      img.close()
+    except:
+      print("Invalid image format (" + src + ")")
+      continue
     count += 1
 
 if __name__ == "__main__":
