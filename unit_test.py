@@ -1,14 +1,14 @@
-import img_fetch
 import os
 import requests
 import unittest
 from unittest import mock
 from pathlib import Path
+import img_fetch
 
 def mocked_requests(*args, **kwargs):
   class MockResponse:
     def __init__(self, path, status_code):
-      mock_data = open(path, 'r')
+      mock_data = open(path, "r")
       read_text = mock_data.read()
       mock_data.close()
       self.text = read_text

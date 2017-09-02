@@ -23,7 +23,18 @@ def main():
   normalized_urls = normalize_src(url, scraped_srcs)
   save_links(normalized_urls, os.path.join(path, "img-links.txt"))
   save_img(normalized_urls, path)
-  print("Files successfully saved in " + path)
+  print("Finished!")
+
+def scrape_img(url):
+  """List of img's links found at the url."""
+  html_str = requests.get(url).text
+  soup = BeautifulSoup(html_str, "html.parser")
+  img_tags = soup.find_all("img")
+  img_srcs = []
+  for tag in img_tags:
+    img_srcs.append(tag["src"])
+  print("Saving " + str(len(img_srcs)) + " images...")
+  return img_srcs
 
 def normalize_src(url, relative_srcs):
   """Normalizes relative imgs' urls."""
@@ -36,17 +47,6 @@ def normalize_src(url, relative_srcs):
     else:
       normalized_srcs.append(parsed.geturl())
   return normalized_srcs
-
-def scrape_img(url):
-  """List of img's links found at the url."""
-  html_str = requests.get(url).text
-  # find all the img and then value of associated src tag
-  soup = BeautifulSoup(html_str, 'html.parser')
-  img_tags = soup.find_all('img')
-  img_srcs = []
-  for tag in img_tags:
-    img_srcs.append(tag['src'])
-  return img_srcs
 
 def save_links(img_srcs, file_path):
   """"Writes images' adresses in path."""
