@@ -2,6 +2,20 @@
 #    Writes a file on disk, which lists the URL’s of the images fetched
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse, urljoin
+
+def normalize_src(url, relative_srcs):
+  """Normalizes relative imgs' urls."""
+  normalized_srcs = []
+  url_scheme = urlparse(url).scheme
+  for src in relative_srcs:
+    parsed = urlparse(src, url_scheme)
+    if not parsed.netloc:
+      normalized_srcs.append(urljoin(url, src))
+    else:
+      normalized_srcs.append(parsed.geturl())
+
+  return normalized_srcs
 
 def scrape_img(url):
   """List of img's links found at the url."""

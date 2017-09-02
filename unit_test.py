@@ -15,7 +15,14 @@ def mocked_requests(*args, **kwargs):
   return MockResponse(args[0], 200)
 
 class MyTestCase(unittest.TestCase):
-  @mock.patch('requests.get', side_effect=mocked_requests)
+
+  def test_normalize_src(self):
+    srcs = ["http://images.net/kitty.jpg", "//i.images.net/kitty.jpg", "kitty.jpg"]
+    expected = ["http://images.net/kitty.jpg", "http://i.images.net/kitty.jpg", "http://images.net/kitty.jpg"]
+    actual = img_fetch.normalize_src("http://images.net", srcs)
+    self.assertEqual(expected, actual)
+
+  @mock.patch("requests.get", side_effect=mocked_requests)
   def test_scrape_img(self, mock_get):
     expected = ["foo", "bar", "spam"]
     actual = img_fetch.scrape_img("test-data/mock-page.html")
