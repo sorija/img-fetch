@@ -1,6 +1,9 @@
-#    Finds and fetches all images on a webpage and stores the images on disk
-#    Writes a file on disk, which lists the URL’s of the images fetched
+import os
+import sys
 import requests
+import pathlib
+from PIL import Image
+from io import BytesIO
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
@@ -14,7 +17,6 @@ def normalize_src(url, relative_srcs):
       normalized_srcs.append(urljoin(url, src))
     else:
       normalized_srcs.append(parsed.geturl())
-
   return normalized_srcs
 
 def scrape_img(url):
@@ -32,3 +34,14 @@ def save_links(img_srcs, file_path):
   """"Writes images' adresses in path."""
   with open(file_path, "w") as new_file:
     new_file.write('\n'.join(img_srcs))
+
+def save_img(srcs, dir_path):
+  """Downloads images into dir_path."""
+  count = 0
+  for src in srcs:
+    r = requests.get(src)
+    img = Image.open(BytesIO(r.content))
+    name = "img" + str(count) + pathlib.Path(src).suffix
+    img.save(os.path.join(dir_path, name))
+    img.close()
+    count += 1
