@@ -7,6 +7,24 @@ from io import BytesIO
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
+def main():
+  usage = "Usage: img_fetch.py url path"
+  if not len(sys.argv) == 3:
+    print(usage)
+    sys.exit(1)
+  url = sys.argv[1]
+  path = sys.argv[2]
+  parsed = urlparse(url, "http")
+  if not parsed.netloc:
+    print("Please preface the address with 'http://'")
+    sys.exit(1)
+  print("Working on it...")
+  scraped_srcs = scrape_img(url)
+  normalized_urls = normalize_src(url, scraped_srcs)
+  save_links(normalized_urls, os.path.join(path, "img-links.txt"))
+  save_img(normalized_urls, path)
+  print("Files successfully saved in " + path)
+
 def normalize_src(url, relative_srcs):
   """Normalizes relative imgs' urls."""
   normalized_srcs = []
@@ -45,3 +63,6 @@ def save_img(srcs, dir_path):
     img.save(os.path.join(dir_path, name))
     img.close()
     count += 1
+
+if __name__ == "__main__":
+  main()
